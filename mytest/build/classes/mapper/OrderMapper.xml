@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="mapper.OrderMapper"> 
+  	
+  	<resultMap type="order" id="orderMapping">
+		
+			<id column="order_id" property="orderId" />
+			<result column="order_time" property="orderTime" />
+			<result column="order_money" property="orderMoney" />
+			<result column="user_id" property="userId" />
+			<result column="order_status" property="orderStatus" />
+			
+		<association property="mydetial" javaType="detial">
+			<id column="detial_id" property="detialId"/>
+			<result column="detial_number" property="detialNumber"/>
+			<result column="order_id" property="orderId"/>
+			<result column="good_id" property="goodId"/>
+			<result column="locality" property="locality"/>
+			<result column="recipient_name" property="recipientName"/>
+			<result column="recipient_phone" property="recipientPhone"/>
+			
+			
+		</association>
+	</resultMap>
+  	
+  	
+  	
+  	<insert id="insertIntoDB">
+  		insert into order_table (order_time,order_money,user_id,order_status,order_id)
+  		values(#{orderTime},#{orderMoney},#{userId},#{orderStatus},#{orderId});
+  	
+  	</insert>
+  	
+  	<update id="updateStatusById">
+  		update order_table set order_status = #{1} where order_id = #{0};
+  	
+  	</update>
+  	
+  	<insert id="insertIntoDetial" parameterType="detial">
+  		insert into order_detial 
+  		(recipient_phone,recipient_name,locality,order_id) 
+  		values(#{recipientPhone},#{recipientName},#{locality},#{orderId});
+  	</insert>
+  	
+  	<select id="selectOrders" resultMap="orderMapping" resultType="model.Order">
+  		select * from order_table
+  	</select>
+  	
+  	<select id="sumMoneyByTime"  resultType="java.lang.Integer">
+	<!-- 查询包含某一天的记录 -->
+		SELECT SUM(order_money) FROM order_table WHERE order_time LIKE 
+		CONCAT('%',#{0},'%')
+	</select>
+  	
+  	<select id="">
+  		select sum(order_money)from 
+  	</select>
+  	
+  
+  </mapper>

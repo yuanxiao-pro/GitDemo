@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="mapper.AdvertMapper"> 
+ 
+ 	<resultMap type="advert" id="advertMapping">
+		
+			<id column="ad_id" property="addId" />
+			<result column="good_id" property="goodId" />
+			<result column="ad_context" property="addContext" />
+			
+		
+	</resultMap>
+ 
+ 
+	<insert id="addToPage">
+		insert into ad_table (good_id,ad_context) values (#{0},#{1})
+	</insert>
+
+	<select id="selectAdvert" resultType="model.Advert" resultMap="advertMapping" >
+		select * from ad_table
+	</select>
+	
+	<select id="selectAdvertLimit" resultType="model.Advert" resultMap="advertMapping">
+		select * from ad_table limit 3;
+		<!-- 只查询五条 -->
+	</select>
+	
+	<select id="selectId" resultMap="advertMapping">
+		select good_id from ad_table limit 3; 
+		<!-- 查询出的记录不能用integer -->
+	</select>
+	
+
+  </mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+         http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 
+		class是数据源的类
+		选择多种， 带连接池
+		选用某一种带连接池的方式
+		dbcp连接池
+		c3p0连接池
+		啊里巴巴的连接池
+	 -->
+	 
+	<!--  <mvc:annotation-driven/> -->
+	 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3308/bsms"></property>
+		<property name="username" value="root"></property>
+
+		<property name="password" value="mysql"></property>
+		
+		<!-- 配置连接池 -->
+		<!-- 最大链接数 -->
+		<property name="maxActive" value="200"></property>
+	</bean>
+
+	 <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+	 	
+	 	<property name="configLocation"  value="classpath:mybatis.xml"></property>
+	 	
+	 	<property name="dataSource" ref="dataSource"></property>
+	 	
+	 	<property name="plugins">
+            <bean class="com.github.pagehelper.PageInterceptor">
+                <property name="properties">
+                    <value>
+                        helperDialect=mysql
+                    </value>
+                </property>
+            </bean>
+    	</property>
+	 	
+	 </bean>
+	 
+	 <!-- 在mybatis中注册mapper文件  , 使用集成的方式扫描mapper-->
+	 <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	 	<!-- 指定扫描mapper的package -->
+	 	<property name="basePackage" value="mapper"></property>
+	 </bean>
+	 <!-- 扫描service -->
+	 <context:component-scan base-package="service"></context:component-scan>
+	 
+	 
+	 <!-- spring 事务管理 -->
+	 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	 	<property name="dataSource" ref="dataSource"></property>
+	 </bean>
+	 
+	 <!-- 开启注解的事务
+	 	@Transactional  注解可以打到   类或者是方法上，类或者方法将会将会被事务包裹
+	  -->
+	 <tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="mapper.CartMapper">
+ 	
+ 	<resultMap id="Cart" type="cart">
+		<id column="cart_id" property="cartId"/>
+		<result column="good_id" property="goodId"/>
+		<result column="good_number" property="goodNumber"/>
+		<result column="user_id" property="userId"/>
+		<collection property="list" ofType="Goods">
+			<id column="good_id" property="goodId" />
+			<result column="good_name" property="goodName" />
+			<result column="good_price" property="goodPrice" />
+			<result column="good_dis" property="goodDis" />
+			<result column="good_brand" property="goodBrand" />
+			<result column="good_pic" property="goodPic" />
+			<result column="good_discribe" property="goodDiscribe" />
+			<result column="good_status" property="goodStatus" />
+			<result column="good_sizeid" property="goodSizeId" />
+			<result column="category_id" property="categoryId" />
+		</collection>
+	</resultMap>
+ 	
+ 	<select id="selectByUid" resultMap="Cart">
+ 		SELECT * 
+		FROM cart_table ,goods 
+		WHERE goods.good_id=cart_table.good_id AND cart_table.user_id=#{0}; 
+ 	</select>
+ 	<!-- goods.good_id=cart_table.good_id AND --> 
+ 	<!-- cart_table.cart_id tid,cart_table.good_number,cart_table.good_id,cart_table.user_id,
+		goods.good_brand,goods.good_dis,goods.good_name,goods.good_pic,goods.good_price,goods.good_sizeid -->
+	<select id="deleteById" resultMap="Cart">
+		delete from cart_table where good_id=#{0} and user_id=#{1};
+	</select>
+
+	
+	<update id="minNumber">
+		update cart_table set good_number = good_number - #{goodNumber} 
+		where good_id=#{goodId} and user_id = #{userId};
+	</update>
+	
+	<update id="addNumber">
+		update cart_table set good_number = good_number + #{goodNumber} 
+		where good_id=#{goodId} and user_id = #{userId};
+	</update>
+	
+	<!-- <select id="sumPrice" resultMap="Cart" parameterType="java.lang.Integer">
+		SELECT 
+		SUM(g.good_price*c.good_number)
+		FROM cart_table c,goods g 
+		WHERE user_id=#{0} AND c.good_id=g.good_id;
+		 AND c.good_id=g.good_id;
+	</select> -->
+	
+	<delete id="deleteByUserId">
+		delete from cart_table where user_id = #{0};
+	
+	</delete>
+	
+	<insert id="insertIntoDB">
+		insert into cart_table (good_id,good_number,user_id)values (#{1},#{2},#{0});
+	</insert>
+	
+	<select id="selectById" resultMap="Cart" resultType="model.Cart">
+		select * from cart_table where user_id=#{0} and good_id=#{1};
+	</select>
+	
+	<update id="updateById">
+		update cart_table set 
+		good_number = good_number + #{2} 
+		where user_id=#{0} and good_id=#{1};
+	</update>
+	
+	<select id="selectAll" resultMap="Cart" resultType="model.Cart">
+		select * from cart_table where user_id = #{0}
+	</select>
+	
+	
+ </mapper>

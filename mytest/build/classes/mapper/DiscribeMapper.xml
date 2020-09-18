@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="mapper.DiscribeMapper">
+  	
+  	<resultMap id="DiscribeMapping" type="discribe">
+		<id column="discribe_id" property="disId"/>
+		<result column="user_id" property="userId"/>
+		<result column="good_id" property="goodId"/>
+		<result column="discribe_text" property="disText"/>
+		
+	</resultMap>
+  	
+  	
+  	<insert id="insertDiscribe" parameterType="model.Discribe">
+  		insert into discribe_table values (#{disText},#{userId},#{goodId});
+  	</insert>
+  	
+  	<select id="loadDiscribe" resultMap="DiscribeMapping" resultType="model.Discribe">
+  		select * from discribe_table where good_id = #{0};
+  	</select>
+  	
+  	<insert id="addDiscribe">
+  		insert into discribe_table (good_id,user_id,discribe_text)values(#{1},#{0},#{2});
+  	</insert>
+  	
+  	<select id="selectByPage" resultType="model.Discribe">
+ 		select * from discribe_table where good_id=#{0} limit 0,10;
+ 	</select>
+  	
+  </mapper>
